@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!--<base href='http://courseware.codeschool.com/ember/' />-->
+    <link href='css/bootstrap.css' rel='stylesheet' />
+    <!--<link href='application.css' rel='stylesheet' />-->
+    <script src='js/jquery.js'></script>
+    <script src='js/handlebars.js'></script>
+    <script src='js/ember.js'></script>
+    <!--<script src='js/ember-data.js'></script>-->
+    <script src='js/app.js'></script>
+</head>
+<body>
+<script type="text/x-handlebars" data-template-name="application">
+   <div class="navbar">
+       <ul class='nav navbar-nav navbar-right'>
+           <li href='#' class='active'>Home</li>
+           <li href='#/about'>About</li>
+       </ul>
+   </div>
+   <div class="container">{{outlet}}</div>
+   <footer class="container">...</footer>
+</script>
+
+<script type="text/x-handlebars" data-template-name="index">
+    <h1>Welcome to the Flint  & Flame!</h1>
+</script>
+
+<script type="text/x-handlebars" data-template-name="about">
+    <h1>About The Fire Spirits</h1>
+</script>
+</body>
+</html>
