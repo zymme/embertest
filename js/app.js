@@ -17,13 +17,42 @@ App.ProductsRoute = Ember.Route.extend({
     }
 });
 
+App.IndexRoute = Ember.Route.extend({
+
+    model: function() {
+
+        return this.store.find('product');
+
+    }
+});
+
 App.Product = DS.Model.extend({
     title: DS.attr('string'),
     price: DS.attr('number'),
     description: DS.attr('string'),
     isOnSale: DS.attr('boolean'),
-    image: DS.attr('string')
+    image: DS.attr('string'),
+    reviews: DS.hasMany('review', { async: true } )
 });
+
+App.Review = DS.Model.extend( {
+
+    text: DS.attr('string'),
+    reviewedAt: DS.attr('date'),
+    product: DS.belongsTo('product')
+});
+
+App.Review.FIXTURES = [
+    {
+        id: 100,
+        text: "Started on fire!@!"
+    },
+    {
+        id: 101,
+        text: "Not the biggest flame but warm :)"
+    }
+
+];
 
 App.Product.FIXTURES = [
     {
@@ -32,7 +61,8 @@ App.Product.FIXTURES = [
         price: 99,
         description: 'Flint is..',
         isOnSale: true,
-        image: 'images/flint.png'
+        image: 'images/flint.png',
+        reviews: [100, 101]
     },
     {
         id: 2,
@@ -41,6 +71,22 @@ App.Product.FIXTURES = [
         description: 'Kindling Easily ...',
         isOnSale: false,
         image: 'images/kindling.png'
+    } ,
+    {
+        id: 3,
+        title: 'Matches',
+        price: 4,
+        description: 'Matches!!! they are awesome',
+        isOnSale: false,
+        image: ''
+    },
+    {
+        id: 4,
+        title: 'Fire Pit',
+        price: 69,
+        description: 'Fire pits are great for outdoor fun!',
+        isOnSale: true,
+        image: ''
     }
 ];
 
@@ -57,6 +103,7 @@ App.Router.map(function() {
 
     this.resource('products', function () {
         this.resource('product', { path: '/:product_id' });
+        this.route('onsale');
     });
 
     this.resource('contacts');
@@ -66,9 +113,16 @@ App.Router.map(function() {
 
 
 
-App.IndexController = Ember.Controller.extend( {
+App.IndexController = Ember.ArrayController.extend( {
 
-    productsCount: 6,
+    productsCount: Ember.computed.alias('length'),
+    onSale: function() {
+//        debugger;
+        return this.filter(function(product) {
+//            debugger;
+            return product.get('isOnSale');
+        });
+    }.property('@each.isOnSale'),
     logo: 'images/logo.png',
     time: function() {
         return (new Date()).toDateString()
@@ -76,10 +130,25 @@ App.IndexController = Ember.Controller.extend( {
 
 });
 
+
+
+App.ProductsController = Ember.ArrayController.extend( {
+
+    sortProperties: ['title'],
+    sortAscending: true
+});
+
 App.AboutController = Ember.Controller.extend({
     contactName: 'Zed'
 });
 
+
+App.ProductsOnsaleRoute = Ember.Route.extend({
+
+   model: function(){
+       return this.modelFor('products').filterBy('isOnSale');
+   }
+});
 
 
 //App.ProductRoute = Ember.Route.extend({
