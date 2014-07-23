@@ -39,21 +39,24 @@
 
     <p>On Sale Items...</p>
     {{#each onSale}}
-      <div class="co-sm-4">
-
-          <div class="col-sm-7">
-              <h2>{{title}}</h2>
-              <p class="product-description">{{description}}</p>
-              <p>{{#link-to 'product' this class='btn btn-success'}}
-              Buy for {{price}}{{/link-to}}</p>
-              <span class="label label-warning">
-                  {{#link-to 'products.onsale'}}On Sale{{/link-to}}
-              </span>
-          </div>
-      </div>
+      {{product-details product=this classNames="col-sm-4"}}
 
     {{/each}}
 </script>
+
+<script type="text/x-handlebars" data-template-name="components/product-details">
+    <h2>{{product.title}}</h2>
+    <p class="product-description">{{product.description}}</p>
+    <p>{{#link-to 'product' product class='btn btn-success'}}
+        Buy for {{product.price}}{{/link-to}}</p>
+              <span class="label label-warning">
+                  {{#link-to 'products.onsale'}}On Sale{{/link-to}}
+              </span>
+    {{#if hasReviews}}
+      <p class="text-muted">Read all reviews {{reviewsCount}}</p>
+    {{/if}}
+</script>
+
 <script type="text/x-handlebars" data-template-name="products">
   <h1>Products</h1>
 
@@ -82,16 +85,7 @@
     <h2>On Sale Products!</h2>
     <ul class="list-unstyled">
         {{#each}}
-          <li class="row">
-              <img {{bind-attr src='image'}} class='img-thumbnail col-sm-5' />
-              <div class="col-sm-7">
-                  <h2>{{title}}</h2>
-                  <p class="product-description">{{description}}</p>
-                  <p>{{#link-to 'product' this class='btn btn-success'}}
-                  Buy for {{price}}{{/link-to}}
-                  </p>
-              </div>
-          </li>
+          {{product-details product=this tagName='li' classNames='row'}}
         {{/each}}
     </ul>
 </script>
@@ -100,17 +94,30 @@
     <p>{{description}}</p>
     <p>Buy for {{price}}</p>
 
+    {{render 'reviews' reviews}}
+    <div class="new-review">
+        <h3>Review {{title}}</h3>
+        {{#if text}}
+         <p class="text-muted">{{text}}</p>
+        {{/if}}
+        {{textarea valueBinding='text'}}
+        <button {{action 'createReview'}}  class='btn-primary'>Review</button>
+    </div>
+</script>
+
+<script type="text/x-handlebars" data-template-name="reviews">
     <h3>Reviews</h3>
     <ul>
-        {{#each reviews}}
-          <li>{{text}}</li>
+        {{#each}}
+        <li>{{text}}</li>
         {{else}}
-          <li><p class="text-muted">
-              <em>No reviews yet, be the first to write one</em>
-          </p> </li>
+        <li><p class="text-muted">
+            <em>No reviews yet, be the first to write one</em>
+        </p> </li>
         {{/each}}
     </ul>
 </script>
+
 <script type='text/x-handlebars' data-template-name='about'>
     <h1>About The Fire Sprites</h1>
 </script>

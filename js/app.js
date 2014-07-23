@@ -138,6 +138,29 @@ App.ProductsController = Ember.ArrayController.extend( {
     sortAscending: true
 });
 
+App.ProductController = Ember.ObjectController.extend({
+
+    text: '',
+    actions: {
+        createReview: function() {
+
+            var review = this.store.createRecord('review', {
+                text: this.get('text'),
+                product: this.get('model'),
+                reviewedAt: new Date()
+            });
+
+            var controller = this;
+
+            review.save().then(function(review) {
+                controller.set('text', '');
+                controller.get('model.reviews').addObject(review);
+            });
+        }
+    }
+
+});
+
 App.AboutController = Ember.Controller.extend({
     contactName: 'Zed'
 });
@@ -148,6 +171,29 @@ App.ProductsOnsaleRoute = Ember.Route.extend({
    model: function(){
        return this.modelFor('products').filterBy('isOnSale');
    }
+});
+
+App.ProductDetailsComponent = Ember.Component.extend({
+
+   reviewsCount: Ember.computed.alias('product.reviews.length'),
+   hasReviews: function () {
+       return this.get('reviewsCount') > 0;
+   }.property('reviewsCount')
+
+});
+
+App.ProductView = Ember.View.extend({
+
+    classNames: ['row'],
+    classNameBindings: ['isOnSale'],
+    isOnSale: Ember.computed.alias('controller.isOnSale')
+});
+
+App.ReviewsController = Ember.ArrayController.extend({
+
+    sortProperties: ['reviewedAt'],
+    sortAscending: false
+
 });
 
 
